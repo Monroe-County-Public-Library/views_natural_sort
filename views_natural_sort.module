@@ -495,7 +495,7 @@ function views_natural_sort_get_transformations(array $index_entry) {
 function views_natural_sort_get_supported_entity_properties() {
   $supported_properties = &backdrop_static(__FUNCTION__, array());
   if (empty($supported_properties)) {
-    $entity_property_info = entity_get_property_info();
+    $entity_property_info = entity_plus_get_property_info();
     $entity_info = entity_get_info();
     foreach ($entity_property_info as $entity_type => $info) {
       if (empty($supported_properties[$entity_type])) {
@@ -506,7 +506,7 @@ function views_natural_sort_get_supported_entity_properties() {
         $properties = $info['properties'];
       }
       foreach ($properties as $property => $property_info) {
-        $property_info += entity_property_info_defaults();
+        $property_info += entity_plus_property_info_defaults();
         if ($property_info['type'] != 'text' || empty($property_info['schema field'])) {
           continue;
         }
