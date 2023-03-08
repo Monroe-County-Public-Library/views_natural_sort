@@ -1,7 +1,7 @@
 name = Views Natural Sort
 description = Sort results naturally on a node's title skipping articles like "the" and "a."
 dependencies[] = views
-dependencies[] = entity
+dependencies[] = entity_plus
 
 package = Views
 backdrop = 1.x
