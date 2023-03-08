@@ -37,7 +37,7 @@ function views_natural_sort_views_data_alter(&$views_data) {
           case 'views_handler_field_node':
             $view_field_data['field']['handler'] = 'views_natural_sort_handler_field_node';
             break;
-          // @todo: Add support for other field handlers.
+            // @todo: Add support for other field handlers.
         }
       }
     }
@@ -49,6 +49,6 @@ function views_natural_sort_views_data_alter(&$views_data) {
  */
 function views_natural_sort_views_plugins_alter(&$plugins) {
   $plugins['style']['table']['handler'] = 'views_natural_sort_plugin_style_table';
-  $plugins['style']['table']['path'] = drupal_get_path('module', 'views_natural_sort') . '/plugins';
+  $plugins['style']['table']['path'] = backdrop_get_path('module', 'views_natural_sort') . '/plugins';
   $plugins['style']['table']['file'] = 'views_natural_sort_plugin_style_table.inc';
 }

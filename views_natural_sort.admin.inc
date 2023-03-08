@@ -10,8 +10,8 @@
  */
 function views_natural_sort_settings_page() {
   $content = array(
-    'settings' => drupal_get_form('views_natural_sort_settings_form'),
-    'rebuild' => drupal_get_form('views_natural_sort_rebuild_index_form'),
+    'settings' => backdrop_get_form('views_natural_sort_settings_form'),
+    'rebuild' => backdrop_get_form('views_natural_sort_rebuild_index_form'),
   );
   return $content;
 }
@@ -30,7 +30,6 @@ function views_natural_sort_rebuild_index_form() {
     '#title' => t('Incase of Emergency'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-
     'button' => array(
       '#type' => 'submit',
       '#description' => 'Incase of an emergency.',
@@ -48,38 +47,39 @@ function views_natural_sort_rebuild_index_form() {
  * Allows the removal of specific words and symbols from all your titles.
  */
 function views_natural_sort_settings_form() {
+  $config = config('views_natural_sort.settings');
   $form = array();
 
   $form['beginning_words'] = array(
     '#type' => 'textfield',
     '#title' => 'Words to filter from the beginning of a phrase',
-    '#default_value' => implode(',', variable_get('views_natural_sort_beginning_words_remove', array())),
+    '#default_value' => implode(',', $config->get('views_natural_sort_beginning_words_remove')),
     '#description' => t('Commonly, the words "A", "The", and "An" are removed when sorting book titles if they appear at the beginning of the title. Those would be great candidates for this field. Separate words with a comma.'),
   );
 
   $form['words'] = array(
     '#type' => 'textfield',
     '#title' => 'Words to filter from anywhere in a phrase',
-    '#default_value' => implode(',', variable_get('views_natural_sort_words_remove', array())),
+    '#default_value' => implode(',', $config->get('views_natural_sort_words_remove')),
     '#description' => t('Commonly used words like "of", "and", and "or" are removed when sorting book titles. Words you would like filtered go here. Separate words with a comma.'),
   );
 
   $form['symbols'] = array(
     '#type' => 'textfield',
     '#title' => 'Symbols to filter from anywhere in a phrase',
-    '#default_value' => variable_get('views_natural_sort_symbols_remove', ''),
+    '#default_value' => $config->get('views_natural_sort_symbols_remove'),
     '#description' => t('Most symbols are ignored when performing a sort naturally. Those symbols you want ignored go here. Do not use a separator. EX: &$".'),
   );
   $form['days_of_the_week_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => 'Sort days of the week and their abbreviations',
     '#description' => "Checking this setting will allow sorting of days of the week in their proper order starting with the day of the week that is configurable by you and for each language.",
-    '#efault_value' => variable_get('views_natural_sort_days_of_the_week_enabled', FALSE),
+    '#efault_value' => $config->get('views_natural_sort_days_of_the_week_enabled'),
   );
   $form['batch_items'] = array(
     '#type' => 'textfield',
     '#title' => 'Items per Batch',
-    '#default_value' => variable_get('views_natural_sort_rebuild_items_per_batch', '500'),
+    '#default_value' => $config->get('views_natural_sort_rebuild_items_per_batch'),
     '#description' => t('The number of items a batch process will work through at a given time. Raising this number will make the batch go quicker, however, raising it too high can cause timeouts and/or memory limit errors.'),
     '#element_validate' => array('element_validate_integer_positive'),
   );
@@ -101,11 +101,11 @@ function views_natural_sort_settings_form_submit($form, &$form_state) {
   array_walk($words, 'views_natural_sort_trim');
   $symbols = trim($form_state['values']['symbols']);
 
-  variable_set('views_natural_sort_beginning_words_remove', $beginning_words);
-  variable_set('views_natural_sort_words_remove', $words);
-  variable_set('views_natural_sort_symbols_remove', $symbols);
-  variable_set('views_natural_sort_days_of_the_week_enabled', $form_state['values']['days_of_the_week_enabled']);
-  variable_set('views_natural_sort_rebuild_items_per_batch', $form_state['values']['batch_items']);
+  config_set('views_natural_sort.settings', 'views_natural_sort_beginning_words_remove', $beginning_words);
+  config_set('views_natural_sort.settings', 'views_natural_sort_words_remove', $words);
+  config_set('views_natural_sort.settings', 'views_natural_sort_symbols_remove', $symbols);
+  config_set('views_natural_sort.settings', 'views_natural_sort_days_of_the_week_enabled', $form_state['values']['days_of_the_week_enabled']);
+  config_set('views_natural_sort.settings', 'views_natural_sort_rebuild_items_per_batch', $form_state['values']['batch_items']);
   views_natural_sort_rebuild_index_submit();
 }
 
@@ -137,7 +137,7 @@ function views_natural_sort_rebuild_index_batch_set(array $entry_types = array()
     'operations' => $operations,
     'title' => t('Rebuilding Views Natural Sort Indexing Entries'),
     'finished' => 'views_natural_sort_rebuild_index_finished',
-    'file' => drupal_get_path('module', 'views_natural_sort') . '/views_natural_sort.admin.inc',
+    'file' => backdrop_get_path('module', 'views_natural_sort') . '/views_natural_sort.admin.inc',
   );
 
   batch_set($batch);
@@ -156,7 +156,7 @@ function views_natural_sort_rebuild_index($entry_type, &$context) {
     // Getting just the count is ok, because theoretically, any items added in
     // the process of things getting reindexed would already have entries.
     $sandbox['max'] = module_invoke($entry_type['module'], 'views_natural_sort_queue_rebuild_data_count', $entry_type);
-    $sandbox['items_per_batch'] = variable_get('views_natural_sort_rebuild_items_per_batch', '500');
+    $sandbox['items_per_batch'] = config_get('views_natural_sort.settings', 'views_natural_sort_rebuild_items_per_batch');
   }
   if (empty($results['entries'])) {
     $results['entries'] = 0;
@@ -169,10 +169,10 @@ function views_natural_sort_rebuild_index($entry_type, &$context) {
     $context['message'] = t(
       'Now processing @count of @max @entry_type items.',
       array(
-        '@max' => $sandbox['max'],
-        '@count' => $sandbox['current'],
-        '@entry_type' => $entry_type['entity_type'] . ':' . $entry_type['field'],
-      )
+      '@max' => $sandbox['max'],
+      '@count' => $sandbox['current'],
+      '@entry_type' => $entry_type['entity_type'] . ':' . $entry_type['field'],
+    )
     );
   }
   if ($sandbox['current'] != $sandbox['max']) {
@@ -185,8 +185,8 @@ function views_natural_sort_rebuild_index($entry_type, &$context) {
  */
 function views_natural_sort_rebuild_index_finished($success, $results, $operations) {
   if ($success) {
-    drupal_set_message(t('Index rebuild has completed.'));
-    drupal_set_message(t('Indexed %count.', array(
+    backdrop_set_message(t('Index rebuild has completed.'));
+    backdrop_set_message(t('Indexed %count.', array(
       '%count' => format_plural($results['entries'], '1 entry', '@count entries'),
     )));
   }

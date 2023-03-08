@@ -1,0 +1,12 @@
+[ViewsNaturalSortBasicTest]
+name = Views Natural Sort Basic Test
+description = Tests basic functionality of View Natural Sort
+group = Views Natural Sort
+file = views_natural_sort.test
+
+[ViewsNaturalSortDaysOfTheWeekTest]
+name = Views Natural Sort Days of the Week
+description = Tests Days of the Week Sorting
+group = Views Natural Sort
+file = views_natural_sort.test
+

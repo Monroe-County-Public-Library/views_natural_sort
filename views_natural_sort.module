@@ -76,10 +76,10 @@ function views_natural_sort_module_implements_alter(&$implements, $hook) {
  *     )
  */
 function views_natural_sort_get_entry_types() {
-  $entry_types = &drupal_static(__FUNCTION__, array());
+  $entry_types = &backdrop_static(__FUNCTION__, array());
   if (empty($entry_types)) {
     $data = module_invoke_all('views_natural_sort_get_entry_types');
-    drupal_alter('views_natural_sort_get_entry_types', $data);
+    backdrop_alter('views_natural_sort_get_entry_types', $data);
     // Rekey so we can do a search more easily for entry types.
     foreach ($data as $entry_type) {
       $entry_types[$entry_type['entity_type'] . '|' . $entry_type['field']] = $entry_type;
@@ -90,6 +90,10 @@ function views_natural_sort_get_entry_types() {
 
 /*
  * Implements hook_theme().
+ */
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
  */
 function views_natural_sort_theme() {
   return array(
@@ -106,7 +110,7 @@ function views_natural_sort_theme() {
 function theme_views_natural_sort_style_plugin_table($variables) {
   $form = $variables['form'];
 
-  $output = drupal_render($form['description_markup']);
+  $output = backdrop_render($form['description_markup']);
 
   $header = array(
     t('Field'),
@@ -137,25 +141,25 @@ function theme_views_natural_sort_style_plugin_table($variables) {
   $rows = array();
   foreach (element_children($form['columns']) as $id) {
     $row = array();
-    $row[] = check_plain(drupal_render($form['info'][$id]['name']));
-    $row[] = drupal_render($form['columns'][$id]);
-    $row[] = drupal_render($form['info'][$id]['align']);
-    $row[] = drupal_render($form['info'][$id]['separator']);
+    $row[] = check_plain(backdrop_render($form['info'][$id]['name']));
+    $row[] = backdrop_render($form['columns'][$id]);
+    $row[] = backdrop_render($form['info'][$id]['align']);
+    $row[] = backdrop_render($form['info'][$id]['separator']);
     if (!empty($form['info'][$id]['sortable'])) {
       $row[] = array(
-        'data' => drupal_render($form['info'][$id]['sortable']),
+        'data' => backdrop_render($form['info'][$id]['sortable']),
         'align' => 'center',
       );
       $row[] = array(
-        'data' => drupal_render($form['info'][$id]['default_sort_order']),
+        'data' => backdrop_render($form['info'][$id]['default_sort_order']),
         'align' => 'center',
       );
       $row[] = array(
-        'data' => drupal_render($form['default'][$id]),
+        'data' => backdrop_render($form['default'][$id]),
         'align' => 'center',
       );
       $row[] = array(
-        'data' => drupal_render($form['info'][$id]['natural_sort']),
+        'data' => backdrop_render($form['info'][$id]['natural_sort']),
         'align' => 'center',
       );
     }
@@ -166,17 +170,20 @@ function theme_views_natural_sort_style_plugin_table($variables) {
       $row[] = '';
     }
     $row[] = array(
-      'data' => drupal_render($form['info'][$id]['empty_column']),
+      'data' => backdrop_render($form['info'][$id]['empty_column']),
       'align' => 'center',
     );
     $rows[] = $row;
   }
 
   // Add the special 'None' row.
-  $rows[] = array(t('None'), '', '', '', '', '', array('align' => 'center', 'data' => drupal_render($form['default'][-1])), '', '');
+  $rows[] = array(t('None'), '', '', '', '', '', array(
+      'align' => 'center',
+      'data' => backdrop_render($form['default'][-1]),
+    ), '', '');
 
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
-  $output .= drupal_render_children($form);
+  $output .= backdrop_render_children($form);
   return $output;
 }
 
@@ -327,18 +334,18 @@ function views_natural_sort_store(array $index_entry) {
   // hook_schema_alter() on me.
   return db_merge('views_natural_sort')
     ->key(array(
-      'eid' => $index_entry['eid'],
-      'entity_type' => $index_entry['entity_type'],
-      'field' => $index_entry['field'],
-      'delta' => $index_entry['delta'],
-    ))
+    'eid' => $index_entry['eid'],
+    'entity_type' => $index_entry['entity_type'],
+    'field' => $index_entry['field'],
+    'delta' => $index_entry['delta'],
+  ))
     ->fields(array(
-      'eid' => $index_entry['eid'],
-      'entity_type' => $index_entry['entity_type'],
-      'field' => $index_entry['field'],
-      'delta' => $index_entry['delta'],
-      'content' => drupal_substr($string, 0, 255),
-    ))
+    'eid' => $index_entry['eid'],
+    'entity_type' => $index_entry['entity_type'],
+    'field' => $index_entry['field'],
+    'delta' => $index_entry['delta'],
+    'content' => backdrop_substr($string, 0, 255),
+  ))
     ->execute();
 }
 
@@ -397,6 +404,17 @@ function views_natural_sort_transform(array $index_entry) {
 }
 
 /**
+ * Implements hook_config_info().
+ */
+function views_natural_sort_config_info() {
+  $prefixes['views_natural_sort.settings'] = array(
+    'label' => t('Views Natural Sort settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
  * Get the full list of transformations to run when saving a natural sort entry.
  *
  * @param array $index_entry
@@ -419,12 +437,12 @@ function views_natural_sort_get_transformations(array $index_entry) {
     'views_natural_sort_numbers',
   );
 
-  if (variable_get('views_natural_sort_days_of_the_week_enabled', FALSE)) {
+  if (config_get('views_natural_sort.settings', 'views_natural_sort_days_of_the_week_enabled')) {
     $transformations[] = "views_natural_sort_days_of_the_week_sort_days";
   }
   // Allow other modules to modify the transformation that happens here if
   // needed.
-  drupal_alter('views_natural_sort_transformations', $transformations, $index_entry);
+  backdrop_alter('views_natural_sort_transformations', $transformations, $index_entry);
   return $transformations;
 }
 
@@ -475,7 +493,7 @@ function views_natural_sort_get_transformations(array $index_entry) {
  *   )
  */
 function views_natural_sort_get_supported_entity_properties() {
-  $supported_properties = &drupal_static(__FUNCTION__, array());
+  $supported_properties = &backdrop_static(__FUNCTION__, array());
   if (empty($supported_properties)) {
     $entity_property_info = entity_get_property_info();
     $entity_info = entity_get_info();
@@ -492,7 +510,7 @@ function views_natural_sort_get_supported_entity_properties() {
         if ($property_info['type'] != 'text' || empty($property_info['schema field'])) {
           continue;
         }
-        $schema = drupal_get_schema($entity_info[$entity_type]['base table']);
+        $schema = backdrop_get_schema($entity_info[$entity_type]['base table']);
         $schema_field = $property_info['schema field'];
         if (empty($schema['fields'][$schema_field]) || $schema['fields'][$schema_field]['type'] != 'varchar') {
           continue;
@@ -523,7 +541,7 @@ function views_natural_sort_get_supported_entity_properties() {
  * @see views_natural_sort_get_supported_entity_properties
  */
 function views_natural_sort_get_views_configurable_properties() {
-  $views_configurable_properties = &drupal_static(__FUNCTION__, array());
+  $views_configurable_properties = &backdrop_static(__FUNCTION__, array());
   if (empty($supported_properties)) {
     $supported_entity_properties = views_natural_sort_get_supported_entity_properties();
     $views_data = views_fetch_data();
@@ -571,5 +589,17 @@ function views_natural_sort_entity_to_vns($entity, $entity_type, $field) {
     'field' => $field,
     'delta' => 0,
     'content' => $entity->$field,
+  );
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function views_natural_sort_autoload_info() {
+  return array(
+    'views_natural_sort_handler_field_node' => 'handlers/views_natural_sort_handler_field_node.inc',
+    'views_natural_sort_handler_sort' => 'handlers/views_natural_sort_handler_sort.inc',
+    'views_natural_sort_handler_sort_text_field' => 'handlers/views_natural_sort_handler_sort_text_field.inc',
+    'views_natural_sort_plugin_style_table' => 'plugins/views_natural_sort_plugin_style_table.inc',
   );
 }

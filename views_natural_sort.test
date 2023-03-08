@@ -41,7 +41,7 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
     );
     $nodes = array();
     foreach ($titles as $title) {
-      $nodes[] = $this->drupalCreateNode(array(
+      $nodes[] = $this->backdropCreateNode(array(
         'type' => 'views_natural_sort_test_content',
         'title' => $title,
       ));
@@ -51,10 +51,10 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
     $this->assertIdenticalResultset(
       $view,
       array(
-        array('title' => 'The King And I'),
-        array('title' => 'Oklahoma'),
-        array('title' => 'A Stripped Zebra'),
-      ),
+      array('title' => 'The King And I'),
+      array('title' => 'Oklahoma'),
+      array('title' => 'A Stripped Zebra'),
+    ),
       array('node_title' => 'title')
     );
   }
@@ -69,7 +69,7 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
       'A\\C',
     );
     foreach ($titles as $title) {
-      $nodes[] = $this->drupalCreateNode(array(
+      $nodes[] = $this->backdropCreateNode(array(
         'type' => 'views_natural_sort_test_content',
         'title' => $title,
       ));
@@ -79,10 +79,10 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
     $this->assertIdenticalResultset(
       $view,
       array(
-        array('title' => 'A[B'),
-        array('title' => 'A\\C'),
-        array('title' => 'A(Z'),
-      ),
+      array('title' => 'A[B'),
+      array('title' => 'A\\C'),
+      array('title' => 'A(Z'),
+    ),
       array('node_title' => 'title')
     );
   }
@@ -92,7 +92,7 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
    */
   public function testNaturalSortUnicodeSymbols() {
     module_load_include('inc', 'views_natural_sort', 'views_natural_sort');
-    variable_set('views_natural_sort_symbols_remove', "#…\",'\\()[]«?!»¡¿");
+    config_set('views_natural_sort.settings', 'views_natural_sort_symbols_remove', "#…\",'\\()[]«?!»¡¿");
     $titles = array(
       'Cuando… se abre, ¿dará algún tipo de señal?',
     );
@@ -121,7 +121,7 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
       '3.550 apples',
     );
     foreach ($titles as $title) {
-      $nodes[] = $this->drupalCreateNode(array(
+      $nodes[] = $this->backdropCreateNode(array(
         'type' => 'views_natural_sort_test_content',
         'title' => $title,
       ));
@@ -131,17 +131,17 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
     $this->assertIdenticalResultset(
       $view,
       array(
-        array('title' => '-10 apples'),
-        array('title' => '-3.5501 apples'),
-        array('title' => '-3.550 apples'),
-        array('title' => '-2 apples'),
-        array('title' => '-1 apples'),
-        array('title' => '1 apple'),
-        array('title' => '2 apples'),
-        array('title' => '3.550 apples'),
-        array('title' => '3.5501 apples'),
-        array('title' => '10 apples'),
-      ),
+      array('title' => '-10 apples'),
+      array('title' => '-3.5501 apples'),
+      array('title' => '-3.550 apples'),
+      array('title' => '-2 apples'),
+      array('title' => '-1 apples'),
+      array('title' => '1 apple'),
+      array('title' => '2 apples'),
+      array('title' => '3.550 apples'),
+      array('title' => '3.5501 apples'),
+      array('title' => '10 apples'),
+    ),
       array('node_title' => 'title')
     );
   }
@@ -150,7 +150,7 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
    * Test storing long unicode values.
    */
   public function testStoringLongUnicode() {
-    $node = $this->drupalCreateNode(array(
+    $node = $this->backdropCreateNode(array(
       'type' => 'views_natural_sort_test_content',
       'title' => str_repeat('⌘', 255),
     ));
@@ -167,7 +167,7 @@ class ViewsNaturalSortBasicTest extends ViewsTestCase {
 /**
  * Tests all the "Days of the week" natural sort functionality.
  */
-class ViewsNaturalSortDaysOfTheWeekTest extends DrupalWebTestCase {
+class ViewsNaturalSortDaysOfTheWeekTest extends BackdropWebTestCase {
 
   /**
    * {@inheritdoc}
@@ -185,7 +185,7 @@ class ViewsNaturalSortDaysOfTheWeekTest extends DrupalWebTestCase {
    */
   protected function setUp() {
     parent::setUp('views', 'views_natural_sort');
-    variable_set('views_natural_sort_days_of_the_week_enabled', TRUE);
+    config_set('views_natural_sort.settings', 'views_natural_sort_days_of_the_week_enabled', TRUE);
   }
 
   /**
@@ -202,7 +202,7 @@ class ViewsNaturalSortDaysOfTheWeekTest extends DrupalWebTestCase {
    * Test changing the first day of the week.
    */
   public function testFirstDayMonday() {
-    variable_set("views_natural_sort_days_of_the_week_first_day_en", "Monday");
+    config_set('views_natural_sort.settings', "views_natural_sort_days_of_the_week_first_day_en", "Monday");
     module_load_include('inc', 'views_natural_sort', 'views_natural_sort');
     $expected = array(
       "Monday",

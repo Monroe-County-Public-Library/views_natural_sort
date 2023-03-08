@@ -15,7 +15,7 @@
  *   The transformed string.
  */
 function views_natural_sort_remove_beginning_words($string) {
-  $beginning_words = variable_get('views_natural_sort_beginning_words_remove', array());
+  $beginning_words = config_get('views_natural_sort.settings', 'views_natural_sort_beginning_words_remove');
   if (empty($beginning_words)) {
     return $string;
   }
@@ -38,7 +38,7 @@ function views_natural_sort_remove_beginning_words($string) {
  *   The transformed string.
  */
 function views_natural_sort_remove_words($string) {
-  $words = variable_get('views_natural_sort_words_remove', array());
+  $words = config_get('views_natural_sort.settings', 'views_natural_sort_words_remove');
   if (empty($words)) {
     return $string;
   }
@@ -46,13 +46,13 @@ function views_natural_sort_remove_words($string) {
   array_walk($words, 'preg_quote');
   return preg_replace(
     array(
-      '/\s(' . implode('|', $words) . ')\s+/iu',
-      '/^(' . implode('|', $words) . ')\s+/iu',
-    ),
+    '/\s(' . implode('|', $words) . ')\s+/iu',
+    '/^(' . implode('|', $words) . ')\s+/iu',
+  ),
     array(
-      ' ',
-      '',
-    ),
+    ' ',
+    '',
+  ),
     $string
   );
 }
@@ -67,7 +67,7 @@ function views_natural_sort_remove_words($string) {
  *   The transformed string.
  */
 function views_natural_sort_remove_symbols($string) {
-  $symbols = variable_get('views_natural_sort_symbols_remove', '');
+  $symbols = config_get('views_natural_sort.settings', 'views_natural_sort_symbols_remove');
   if (strlen($symbols) == 0) {
     return $string;
   }
@@ -99,7 +99,7 @@ function views_natural_sort_numbers($string) {
   // Find an optional leading dash (either preceded by whitespace or the first
   // character) followed by either:
   // - an optional series of digits (with optional embedded commas), then a
-  //   period, then an optional series of digits
+//   period, then an optional series of digits
   // - a series of digits (with optional embedded commas)
   return preg_replace_callback(
     '/(\s-|^-)?(?:(\d[\d,]*)?\.(\d+)|(\d[\d,]*))/',
@@ -173,7 +173,7 @@ function views_natural_sort_days_of_the_week_sort_days($string) {
   // Adding a configuration so that in the future an admin page can be made
   // to switch which day is the first day of the week based on local.
   $used_language = isset($language->language) ? $language->language : 'en';
-  $first_day = variable_get('views_natural_sort_days_of_the_week_first_day_' . $used_language, "Sunday");
+  $first_day = config_get('views_natural_sort.settings', 'views_natural_sort_days_of_the_week_first_day_' . $used_language);
 
   $day_list = views_natural_sort_days_of_the_week_get_default_days();
   $sorted_days = $day_list;
@@ -185,9 +185,9 @@ function views_natural_sort_days_of_the_week_sort_days($string) {
     $translated_day = t('@day', array('@day' => $day_list[$current_day]));
     $string = preg_replace(
       array(
-        '/\b' . $translated_day . '\b/i',
-        '/\b(' . implode('\.?|', views_natural_sort_days_of_the_week_get_acceptable_day_abbreviations($day_list[$current_day])) . ')\b/i',
-      ),
+      '/\b' . $translated_day . '\b/i',
+      '/\b(' . implode('\.?|', views_natural_sort_days_of_the_week_get_acceptable_day_abbreviations($day_list[$current_day])) . ')\b/i',
+    ),
       ' ' . $i . ' ',
       $string
     );
@@ -225,10 +225,8 @@ function views_natural_sort_days_of_the_week_get_acceptable_day_abbreviations($d
   $default_days = views_natural_sort_days_of_the_week_get_default_days();
   $index = array_search($day, $default_days);
   $default_abbrev = views_natural_sort_days_of_the_week_get_default_day_abbreviations();
-  return variable_get(
-    'views_natural_sort_days_of_the_week_' . $lang . '_' . $day,
-    $default_abbrev[$index]
-  );
+  return config_get('views_natural_sort.settings',
+    'views_natural_sort_days_of_the_week_' . $lang . '_' . $day);
 }
 
 /**

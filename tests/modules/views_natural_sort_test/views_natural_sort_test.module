@@ -21,7 +21,6 @@ function views_natural_sort_test_node_info() {
       'name' => t('Views Natural Sort Test Content'),
       'base' => 'node_content',
       'description' => t('Content type used for testing the basic functionality of the Views Natural Sort module.'),
-
     ),
   );
 }
@@ -32,7 +31,7 @@ function views_natural_sort_test_node_info() {
 function views_natural_sort_test_views_api() {
   return array(
     'api' => 3.0,
-    'path' => drupal_get_path('module', 'views_natural_sort_test'),
+    'path' => backdrop_get_path('module', 'views_natural_sort_test'),
   );
 }
 

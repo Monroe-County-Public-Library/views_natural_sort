@@ -1,6 +1,7 @@
 name = Views Natural Sort Test
 description = Set up module for Views Natural Sort testing.
 package = Testing
-core = 7.x
+backdrop = 1.x
+type = module
 dependencies[] = views_natural_sort
 hidden = TRUE

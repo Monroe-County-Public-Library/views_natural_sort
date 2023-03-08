@@ -4,10 +4,7 @@ dependencies[] = views
 dependencies[] = entity
 
 package = Views
-core = 7.x
+backdrop = 1.x
+type = module
 
 ; Views handlers
-files[] = handlers/views_natural_sort_handler_sort.inc
-files[] = handlers/views_natural_sort_handler_field_node.inc
-files[] = plugins/views_natural_sort_plugin_style_table.inc
-files[] = views_natural_sort.test

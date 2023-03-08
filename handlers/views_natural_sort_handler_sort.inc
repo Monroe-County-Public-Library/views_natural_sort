@@ -58,7 +58,7 @@ class views_natural_sort_handler_sort extends views_handler_sort {
     }
     // Sometimes we get the appended N from the sort options. Filter it out
     // here.
-    $order = substr($temporder, 0, 1) == 'N' ? substr($temporder, 1) : $temporder;
+    $order = substr($temporder, 0, 1) == 'N'?substr($temporder, 1) : $temporder;
     $this->query->add_orderby($vns_alias, 'content', $order);
   }
 

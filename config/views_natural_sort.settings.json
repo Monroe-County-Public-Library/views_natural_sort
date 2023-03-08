@@ -1,0 +1,10 @@
+{
+    "_config_name": "views_natural_sort.settings",
+    "views_natural_sort_beginning_words_remove": [],
+    "views_natural_sort_words_remove": [],
+    "views_natural_sort_symbols_remove": "",
+    "views_natural_sort_days_of_the_week_enabled": false,
+    "views_natural_sort_rebuild_items_per_batch": "500",
+    "views_natural_sort_days_of_the_week_first_day_used_language": "dynamic variable in file /views_natural_sort/views_natural_sort.inc line 176",
+    "views_natural_sort_days_of_the_week_lang_day": "dynamic variable in file /views_natural_sort/views_natural_sort.inc line 228"
+}

@@ -241,7 +241,7 @@ function views_natrual_sort_text_get_potential_fields() {
  * Helper function to store the text field vns records.
  *
  * @param string $entity_type
- *   A valid drupal entity type machine name.
+ *   A valid backdrop entity type machine name.
  * @param object $entity
  *   A standard object representing an entity from like entity_load().
  * @param array $field
@@ -255,7 +255,7 @@ function _views_natural_sort_text_field_store($entity_type, $entity, array $fiel
  * Convert an entity object to a vns record.
  *
  * @param string $entity_type
- *   A valid drupal entity type machine name.
+ *   A valid backdrop entity type machine name.
  * @param object $entity
  *   A standard object representing an entity from like entity_load().
  * @param array $field
@@ -291,4 +291,16 @@ function _views_natural_sort_text_field_to_vns($entity_type, $entity, array $fie
     }
   }
   return $entries;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function views_natural_sort_text_field_autoload_info() {
+  return array(
+    'views_natural_sort_handler_field_node' => 'handlers/views_natural_sort_handler_field_node.inc',
+    'views_natural_sort_handler_sort' => 'handlers/views_natural_sort_handler_sort.inc',
+    'views_natural_sort_handler_sort_text_field' => 'handlers/views_natural_sort_handler_sort_text_field.inc',
+    'views_natural_sort_plugin_style_table' => 'plugins/views_natural_sort_plugin_style_table.inc',
+  );
 }
