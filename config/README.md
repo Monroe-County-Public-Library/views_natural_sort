@@ -10,7 +10,7 @@ This module requires that the following module is also enabled:
 
  * [Entity Plus](https://github.com/backdrop-contrib/entity_plus)
 
-Installation and Usage
+Installation
 ------------
 
 - Install this module using the official Backdrop CMS instructions at
