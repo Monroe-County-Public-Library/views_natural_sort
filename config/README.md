@@ -18,22 +18,26 @@ Installation and Usage
 
 - Also Enable Views Natural Sort Text Field support.
 
-- Navigate to the fields edit page for the field that you wish to enable Natural Sorting on and check "Enable natural sorting." This is needed so that we aren't indexing other text fields needlessly bloating the sorting table. 
+- Navigate to the fields edit page for the field that you wish to enable Natural Sorting on and under "Global Settings" check "Enable natural sorting." This is needed so that we aren't indexing other text fields needlessly bloating the sorting table. 
+
 - When you do that, your fields "Should" be reindexed... at that time. You should be taken to a batch operations screen.
+
 - Next you can go to the view you are editing and the option to sort the view naturally should be there. 
+
+- You can also navigate to Views > Settings > Natural Sort and customize the words and symbols to filter from sorting.
 
 Issues 
 ------
 
 Bugs and feature requests should be reported in [the Issue Queue](https://github.com/backdrop-contrib/foo-project/issues).
 
-Current Maintainers <!-- This section is required. -->
+Current Maintainers 
 -------------------
 
 - [Paula Gray-Overtoom](https://github.com/pgrayove-mcpl).
 - Seeking additional maintainers.
 
-Credits <!-- This section is required. -->
+Credits 
 -------
 
 - Ported to Backdrop CMS by [Paula Gray-Overtoom](https://github.com/pgrayove-mcpl).
