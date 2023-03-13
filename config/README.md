@@ -26,6 +26,12 @@ Installation
 
 - You can also navigate to Views > Settings > Natural Sort and customize the words and symbols to filter from sorting.
 
+Documentation 
+-------------
+
+Additional documentation is located in [the Wiki](https://github.com/Monroe-County-Public-Library/views_natural_sort/wiki/Documentation).
+
+
 Issues 
 ------
 
